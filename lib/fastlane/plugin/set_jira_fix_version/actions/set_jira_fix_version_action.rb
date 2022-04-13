@@ -5,42 +5,20 @@ module Fastlane
         Actions.verify_gem!('jira-ruby')
         require 'jira-ruby'
 
-        site         = params[:url]
-        auth_type    = params[:auth_type]
-        use_cookies  = params[:use_cookies]
         project_id   = params[:project_key]
         version_name = params[:version_name]
         issue_ids    = self.issue_ids_from_param(params)
 
-        account_manager = self.account_manager(params)
-        username = account_manager.user
-        password = account_manager.password
+        client = JIRA::Client.new(
+          username:     params[:username],
+          password:     params[:password],
+          site:         params[:url],
+          context_path: '',
+          auth_type:    :basic
 
-        options = {
-          site: site,
-          auth_type: auth_type,
-          use_cookies: use_cookies,
-          username: username,
-          password: password
-        }
-        client = JIRA::Client.new(options)
+        )
 
         self.save_version(client, version_name, project_id, issue_ids)
-      end
-
-      def self.account_manager(params)
-        require 'credentials_manager'
-
-        username = params[:username]
-        password = params[:password]
-
-        # gets password via interactive shell if needed
-        return CredentialsManager::AccountManager.new(
-          user: username,
-          password: password,
-          prefix: "set_jira_fix_version",
-          note: "set_jira_fix_version fastlane action"
-        )
       end
 
       def self.issue_ids_from_param(params)
@@ -60,33 +38,7 @@ module Fastlane
       end
 
       def self.save_version(client, version_name, project_key, issue_ids)
-        # create new version if needed
-        begin
-          project = client.Project.find(project_key)
-        rescue => error
-          UI.error("JIRA API call failed. Check if JIRA is available and correct credentials for user with proper permissions are provided!")
-          UI.user_error!(error.response)
-          return
-        end
-
-        is_version_created = false
-        project.versions.each do |version|
-          if version.name == version_name
-            is_version_created = true
-            break
-          end
-        end
-
-        # if the version does not exist then create this JIRA version
-        if is_version_created == false
-          version = project.versions.build
-          create_version_parameters = { "name" => version_name, "projectId" => project.id }
-          version.save(create_version_parameters)
-          UI.message("#{version_name} version is created.")
-        else
-          UI.message("#{version_name} version already exists and will be used as a fix version.")
-        end
-
+        UI.message("Update fix version to #{version_name} for below tickets:\n#{issue_ids}")
         # update issues with fix version
         issue_ids.each do |issue_id|
           begin
