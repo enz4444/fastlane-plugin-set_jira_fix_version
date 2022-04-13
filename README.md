@@ -1,3 +1,12 @@
+# FASTFILE
+```
+  # by providing the FL_* env vars (check action files) in bitrise with `envman add`, then:
+  land :jira_tag do
+    jira_issue_keys_from_changelog
+    set_jira_fix_version
+  end
+
+```
 # set_jira_fix_version plugin
 
 [![fastlane Plugin Badge](https://rawcdn.githack.com/fastlane/fastlane/master/fastlane/assets/plugin-badge.svg)](https://rubygems.org/gems/fastlane-plugin-set_jira_fix_version) [![Gem Version](https://badge.fury.io/rb/fastlane-plugin-set_jira_fix_version.svg)](https://badge.fury.io/rb/fastlane-plugin-set_jira_fix_version)
