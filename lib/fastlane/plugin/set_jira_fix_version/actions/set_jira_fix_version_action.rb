@@ -46,9 +46,12 @@ module Fastlane
           rescue
             UI.error("JIRA issue with #{issue_id} is not found or specified user don't have permissions to see it. It won't be updated!")
           end
-          add_new_version_parameters = { 'update' => { 'fixVersions' => [{ 'add' => { 'name' => version_name } }] } }
-          issue.save(add_new_version_parameters)
-          UI.message("#{issue_id} is updated with fix version #{version_name}")
+          if issue.fixVersions.empty?
+            add_new_version_parameters = { 'update' => { 'fixVersions' => [{ 'add' => { 'name' => version_name } }] } }
+            issue.save(add_new_version_parameters)
+            UI.message("#{issue_id} is updated with fix version #{version_name}")
+          else
+            UI.message("#{issue_id} already has a fix version, will skip update")
         end
       end
 
