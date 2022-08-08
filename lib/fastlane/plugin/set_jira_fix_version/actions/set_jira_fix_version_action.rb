@@ -49,9 +49,9 @@ module Fastlane
           if issue.fixVersions.empty?
             add_new_version_parameters = { 'update' => { 'fixVersions' => [{ 'add' => { 'name' => version_name } }] } }
             issue.save(add_new_version_parameters)
-            UI.message("#{issue_id} is updated with fix version #{version_name}")
+            UI.message("#{issue_id} is updated with fix version #{version_name}.")
           else
-            UI.message("#{issue_id} already has a fix version, will skip update")
+            UI.message("#{issue_id} already has a fix version, will skip update.")
         end
       end
 
