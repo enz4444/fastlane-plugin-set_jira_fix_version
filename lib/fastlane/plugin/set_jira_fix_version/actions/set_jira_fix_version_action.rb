@@ -52,6 +52,7 @@ module Fastlane
             UI.message("#{issue_id} is updated with fix version #{version_name}.")
           else
             UI.message("#{issue_id} already has a fix version, will skip update.")
+          end
         end
       end
 
