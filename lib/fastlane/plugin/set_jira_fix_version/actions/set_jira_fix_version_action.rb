@@ -48,7 +48,7 @@ module Fastlane
           end
           
           # add "fixed version" to label instead
-          add_new_version_parameters = { "update" : { "labels" => [ { "add" : version_name } ] } }
+          add_new_version_parameters = { "update": { "labels": [ { "add": version_name } ] } }
           issue.save(add_new_version_parameters)
           UI.message("#{issue_id} is updated with #{version_name} in labels.")
           
